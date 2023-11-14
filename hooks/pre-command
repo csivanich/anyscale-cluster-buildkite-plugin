@@ -82,3 +82,5 @@ if [[ -z "${ANYSCALE_CLI_TOKEN:-}" ]];then
 fi
 
 "$DOCKER" "${DOCKER_OPTIONS[@]}" "$IMAGE" "${DOCKER_CMD[@]}"
+
+echo "--- :anyscale: Started cluster: $ANYSCALE_CLUSTER_NAME"
