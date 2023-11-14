@@ -89,3 +89,7 @@ fi
 "$DOCKER" "${DOCKER_OPTIONS[@]}" "$IMAGE" "${DOCKER_CMD[@]}"
 
 echo "--- :anyscale: Started cluster: $ANYSCALE_CLUSTER_NAME"
+
+buildkite agent annotate --context anyscale_cluster --style INFO <<-EOL
+:anyscale: Cluster: \`$ANYSCALE_CLUSTER_NAME\` (started)
+EOL
