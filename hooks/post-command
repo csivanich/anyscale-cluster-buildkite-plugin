@@ -16,12 +16,12 @@ fail(){
 # ===========================
 
 DOCKER_OPTIONS=(
+    run
     -it
     --entrypoint anyscale
     )
 
 DOCKER_CMD=(
-    run
     cluster terminate
     )
 
