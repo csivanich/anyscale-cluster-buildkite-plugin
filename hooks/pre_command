@@ -69,4 +69,8 @@ if [[ -n "${BUILDKITE_PLUGIN_ANYSCALE_CLUSTER_IDLE_TIMEOUT:-}" ]];then
     DOCKER_CMD+=(--idle-timeout "${BUILDKITE_PLUGIN_ANYSCALE_CLUSTER_IDLE_TIMEOUT:-10}")
 fi
 
+if [[ -z "${ANYSCALE_CLI_TOKEN:-}" ]];then
+    fail "'ANYSCALE_CLI_TOKEN' environment variable is missing or empty - have you tried the anyscale-credentials-buildkite-plugin?"
+fi
+
 "$DOCKER" "${DOCKER_OPTIONS[@]}" "$IMAGE" run "${DOCKER_CMD[@]}"

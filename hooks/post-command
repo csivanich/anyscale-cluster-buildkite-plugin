@@ -42,4 +42,8 @@ if [[ -n "${BUILDKITE_PLUGIN_ANYSCALE_PROJECT_ID:-}" ]];then
     DOCKER_CMD+=(--project "$BUILDKITE_PLUGIN_ANYSCALE_PROJECT_ID")
 fi
 
+if [[ -z "${ANYSCALE_CLI_TOKEN:-}" ]];then
+    fail "'ANYSCALE_CLI_TOKEN' environment variable is missing or empty - have you tried the anyscale-credentials-buildkite-plugin?"
+fi
+
 "$DOCKER" "${DOCKER_OPTIONS[@]}" "$IMAGE" run "${DOCKER_CMD[@]}"
