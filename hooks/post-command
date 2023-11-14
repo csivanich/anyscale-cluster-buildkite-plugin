@@ -19,6 +19,8 @@ DOCKER_OPTIONS=(
     run
     -it
     --entrypoint anyscale
+    -e ANYSCALE_CLI_TOKEN
+    -e ANYSCALE_HOST
     )
 
 DOCKER_CMD=(
