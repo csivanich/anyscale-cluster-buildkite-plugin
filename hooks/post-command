@@ -1,0 +1,59 @@
+#!/usr/bin/env bash
+
+if [[ -n "${BUILDKITE_PLUGIN_ANYSCALE_CLUSTER_DEBUG:-}" ]];then
+    set -x
+fi
+
+set -euo pipefail
+
+fail(){
+    echo "$@"
+    exit 1
+}
+
+# ===========================
+#  Required configuration
+# ===========================
+
+DOCKER_OPTIONS=(
+    run
+    -it
+    --entrypoint anyscale
+    -e ANYSCALE_CLI_TOKEN
+    -e ANYSCALE_HOST
+    )
+
+DOCKER_CMD=(
+    cluster terminate
+    )
+
+# ===========================
+#  Optional configuration
+# ===========================
+
+DOCKER="${BUILDKITE_PLUGIN_ANYSCALE_CLUSTER_DOCKER_CMD:-docker}"
+IMAGE="${BUILDKITE_PLUGIN_ANYSCALE_CLUSTER_IMAGE:-anyscale/ray:2.8.0}"
+
+if [[ -n "${ANYSCALE_CLUSTER_NAME:-}" ]];then
+    DOCKER_CMD+=(--name "$ANYSCALE_CLUSTER_NAME")
+fi
+
+if [[ -n "${BUILDKITE_PLUGIN_ANYSCALE_CLUSTER_PROJECT_NAME:-}" ]];then
+    DOCKER_CMD+=(--project "$BUILDKITE_PLUGIN_ANYSCALE_CLUSTER_PROJECT_NAME")
+fi
+
+if [[ -n "${BUILDKITE_PLUGIN_ANYSCALE_CLUSTER_PROJECT_ID:-}" ]];then
+    DOCKER_CMD+=(--project-id "$BUILDKITE_PLUGIN_ANYSCALE_CLUSTER_PROJECT_ID")
+fi
+
+if [[ -z "${ANYSCALE_CLI_TOKEN:-}" ]];then
+    fail "'ANYSCALE_CLI_TOKEN' environment variable is missing or empty - have you tried the anyscale-credentials-buildkite-plugin?"
+fi
+
+"$DOCKER" "${DOCKER_OPTIONS[@]}" "$IMAGE" "${DOCKER_CMD[@]}"
+
+echo "--- :anyscale: Terminated cluster: $ANYSCALE_CLUSTER_NAME"
+
+buildkite-agent annotate --context anyscale_cluster --style info <<-EOL
+:anyscale: Cluster: \`$ANYSCALE_CLUSTER_NAME\` | :bk-status-passed: Terminated
+EOL

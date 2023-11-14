@@ -1,0 +1,5 @@
+name: Anyscale Cluster
+description: Runs Anyscale Cluster in a pipeline
+author: https://github.com/csivanich/anyscale-cluster-buildkite-plugin
+requirements: ["docker"]
+configuration: {}
