@@ -90,6 +90,6 @@ fi
 
 echo "--- :anyscale: Started cluster: $ANYSCALE_CLUSTER_NAME"
 
-buildkite-agent annotate --context anyscale_cluster --style INFO <<-EOL
+buildkite-agent annotate --context anyscale_cluster --style info <<-EOL
 :anyscale: Cluster: \`$ANYSCALE_CLUSTER_NAME\` (started)
 EOL
