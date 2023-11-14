@@ -89,10 +89,11 @@ fi
 buildkite-agent annotate --context anyscale_cluster --style info <<-EOL
 :anyscale: Cluster: \`$ANYSCALE_CLUSTER_NAME\` (:bk-status-pending: Starting)
 EOL
+echo "~~~ :anyscale: Starting cluster: $ANYSCALE_CLUSTER_NAME"
 
 "$DOCKER" "${DOCKER_OPTIONS[@]}" "$IMAGE" "${DOCKER_CMD[@]}"
 
-echo "--- :anyscale: Started cluster: $ANYSCALE_CLUSTER_NAME"
+echo "^^^ --- :anyscale: Started cluster: $ANYSCALE_CLUSTER_NAME"
 
 buildkite-agent annotate --context anyscale_cluster --style info <<-EOL
 :anyscale: Cluster: \`$ANYSCALE_CLUSTER_NAME\` (:bk-status-running: Running)
