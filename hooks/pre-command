@@ -86,10 +86,14 @@ if [[ -z "${ANYSCALE_CLI_TOKEN:-}" ]];then
     fail "'ANYSCALE_CLI_TOKEN' environment variable is missing or empty - have you tried the anyscale-credentials-buildkite-plugin?"
 fi
 
+buildkite-agent annotate --context anyscale_cluster --style info <<-EOL
+:anyscale: Cluster: \`$ANYSCALE_CLUSTER_NAME\` (starting)
+EOL
+
 "$DOCKER" "${DOCKER_OPTIONS[@]}" "$IMAGE" "${DOCKER_CMD[@]}"
 
 echo "--- :anyscale: Started cluster: $ANYSCALE_CLUSTER_NAME"
 
 buildkite-agent annotate --context anyscale_cluster --style info <<-EOL
-:anyscale: Cluster: \`$ANYSCALE_CLUSTER_NAME\` (started)
+:anyscale: Cluster: \`$ANYSCALE_CLUSTER_NAME\` (running)
 EOL
