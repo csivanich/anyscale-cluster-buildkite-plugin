@@ -16,7 +16,9 @@ fail(){
 # ===========================
 
 # Overridable cluster name
-DEFAULT_CLUSTER_NAME="buildkite-${BUILDKITE_PIPELINE_SLUG}-${BUILDKITE_BUILD_NUMBER}-${BUILDKITE_RETRY_COUNT}"
+
+PREFIX="${BUILDKITE_PLUGIN_ANYSCALE_CLUSTER_NAME_PREFIX:-buildkite}"
+DEFAULT_CLUSTER_NAME="${PREFIX}-${BUILDKITE_PIPELINE_SLUG}-${BUILDKITE_BUILD_NUMBER}-${BUILDKITE_RETRY_COUNT}"
 ANYSCALE_CLUSTER_NAME="${BUILDKITE_PLUGIN_ANYSCALE_CLUSTER_NAME:-$DEFAULT_CLUSTER_NAME}"
 export ANYSCALE_CLUSTER_NAME
 
@@ -87,7 +89,7 @@ if [[ -z "${ANYSCALE_CLI_TOKEN:-}" ]];then
 fi
 
 buildkite-agent annotate --context anyscale_cluster --style info <<-EOL
-:anyscale: Cluster: \`$ANYSCALE_CLUSTER_NAME\` (:bk-status-pending: Starting)
+:anyscale: Cluster: \`$ANYSCALE_CLUSTER_NAME\` | :bk-status-pending: Starting
 EOL
 echo "~~~ :anyscale: Starting cluster: $ANYSCALE_CLUSTER_NAME"
 
@@ -96,5 +98,5 @@ echo "~~~ :anyscale: Starting cluster: $ANYSCALE_CLUSTER_NAME"
 echo "^^^ --- :anyscale: Started cluster: $ANYSCALE_CLUSTER_NAME"
 
 buildkite-agent annotate --context anyscale_cluster --style info <<-EOL
-:anyscale: Cluster: \`$ANYSCALE_CLUSTER_NAME\` (:bk-status-running: Running)
+:anyscale: Cluster: \`$ANYSCALE_CLUSTER_NAME\` | :bk-status-running: Running
 EOL
