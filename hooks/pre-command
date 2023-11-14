@@ -20,6 +20,11 @@ DEFAULT_CLUSTER_NAME="buildkite-${BUILDKITE_PIPELINE_SLUG}-${BUILDKITE_BUILD_NUM
 ANYSCALE_CLUSTER_NAME="${BUILDKITE_PLUGIN_ANYSCALE_CLUSTER_NAME:-$DEFAULT_CLUSTER_NAME}"
 export ANYSCALE_CLUSTER_NAME
 
+# Allow 'ray job submit' support, etc
+# https://docs.anyscale.com/develop/workspaces/interactive-development#minimalist-guide-on-using-ray-jobs
+RAY_ADDRESS="anyscale://$ANYSCALE_CLUSTER_NAME"
+export RAY_ADDRESS
+
 DOCKER_OPTIONS=(
     run
     -it
