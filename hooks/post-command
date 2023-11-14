@@ -48,4 +48,4 @@ if [[ -z "${ANYSCALE_CLI_TOKEN:-}" ]];then
     fail "'ANYSCALE_CLI_TOKEN' environment variable is missing or empty - have you tried the anyscale-credentials-buildkite-plugin?"
 fi
 
-"$DOCKER" "${DOCKER_OPTIONS[@]}" "$IMAGE" run "${DOCKER_CMD[@]}"
+"$DOCKER" "${DOCKER_OPTIONS[@]}" "$IMAGE" "${DOCKER_CMD[@]}"
