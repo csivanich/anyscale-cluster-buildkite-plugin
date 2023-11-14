@@ -6,6 +6,11 @@ fi
 
 set -euo pipefail
 
+fail(){
+    echo "$@"
+    exit 1
+}
+
 # ===========================
 #  Required configuration
 # ===========================
