@@ -1,0 +1,72 @@
+#!/usr/bin/env bash
+
+if [[ -n "${BUILDKITE_PLUGIN_ANYSCALE_CLUSTER_DEBUG:-}" ]];then
+    set -x
+fi
+
+set -euo pipefail
+
+# ===========================
+#  Required configuration
+# ===========================
+
+# Overridable cluster name
+DEFAULT_CLUSTER_NAME="buildkite-${BUILDKITE_PIPELINE_SLUG}-${BUILDKITE_BUILD_NUMBER}-${BUILDKITE_RETRY_COUNT}"
+
+if [[ -n "${BUILDKITE_PLUGIN_ANYSCALE_CLUSTER_NAME:-}" ]];then
+    CLUSTER_NAME="${BUILDKITE_PLUGIN_ANYSCALE_CLUSTER_NAME:-$DEFAULT_CLUSTER_NAME}"
+fi
+
+DOCKER_OPTIONS=(
+    -it
+    --entrypoint anyscale
+    )
+
+DOCKER_CMD=(
+    run
+    cluster start
+    --name "$CLUSTER_NAME"
+    --env "$CLUSTER_ENV_NAME"
+    )
+
+# ===========================
+#  Optional configuration
+# ===========================
+
+# This is where we will mount configs into the container
+CONTAINER_COMPUTE_DIR=/configs
+
+IMAGE="${BUILDKITE_PLUGIN_ANYSCALE_CLUSTER_IMAGE:-anyscale/ray:2.8.0}"
+
+if [[ -n "${BUILDKITE_PLUGIN_ANYSCALE_CLUSTER_DOCKER_CMD:-}" ]];then
+    DOCKER="${BUILDKITE_PLUGIN_ANYSCALE_CLUSTER_DOCKER_CMD:-docker}"
+fi
+
+if [[ -n "${BUILDKITE_PLUGIN_ANYSCALE_CLUSTER_COMPUTE_NAME:-}" ]];then
+    DOCKER_CMD+=(--compute "$BUILDKITE_PLUGIN_ANYSCALE_CLUSTER_COMPUTE_NAME")
+fi
+
+# File path to compute configuration data file (json, yaml)
+# NOTE: this path is _relative_ to the buildkite job's workdir
+if [[ -n "${BUILDKITE_PLUGIN_ANYSCALE_CLUSTER_COMPUTE_FILE:-}" ]];then
+    DOCKER_OPTION+=(-v "$(pwd):$CONTAINER_COMPUTE_DIR")
+    DOCKER_CMD+=(--compute-file "$CONTAINER_COMPUTE_DIR/$BUILDKITE_PLUGIN_ANYSCALE_COMPUTE_FILE")
+fi
+
+if [[ -n "${BUILDKITE_PLUGIN_ANYSCALE_CLUSTER_PROJECT:-}" ]];then
+    DOCKER_CMD+=(--project "$BUILDKITE_PLUGIN_ANYSCALE_CLUSTER_PROJECT")
+fi
+
+if [[ -n "${BUILDKITE_PLUGIN_ANYSCALE_CLUSTER_PROJECT_ID:-}" ]];then
+    DOCKER_CMD+=(--project-id "$BUILDKITE_PLUGIN_ANYSCALE_CLUSTER_PROJECT_ID")
+fi
+
+if [[ -n "${BUILDKITE_PLUGIN_ANYSCALE_CLUSTER_CLOUD_NAME:-}" ]];then
+    DOCKER_CMD+=(--cloud-name "$BUILDKITE_PLUGIN_ANYSCALE_CLUSTER_CLOUD_NAME")
+fi
+
+if [[ -n "${BUILDKITE_PLUGIN_ANYSCALE_CLUSTER_IDLE_TIMEOUT:-}" ]];then
+    DOCKER_CMD+=(--idle-timeout "${BUILDKITE_PLUGIN_ANYSCALE_CLUSTER_IDLE_TIMEOUT:-10}")
+fi
+
+"$DOCKER" "${DOCKER_OPTIONS[@]}" "$IMAGE" run "${DOCKER_CMD[@]}"

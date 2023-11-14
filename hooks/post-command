@@ -1,0 +1,45 @@
+#!/usr/bin/env bash
+
+if [[ -n "${BUILDKITE_PLUGIN_ANYSCALE_CLUSTER_DEBUG:-}" ]];then
+    set -x
+fi
+
+set -euo pipefail
+
+# ===========================
+#  Required configuration
+# ===========================
+
+DOCKER_OPTIONS=(
+    -it
+    --entrypoint anyscale
+    )
+
+DOCKER_CMD=(
+    run
+    cluster terminate
+    )
+
+# ===========================
+#  Optional configuration
+# ===========================
+
+IMAGE="${BUILDKITE_PLUGIN_ANYSCALE_CLUSTER_IMAGE:-anyscale/ray:2.8.0}"
+
+if [[ -n "${BUILDKITE_PLUGIN_ANYSCALE_CLUSTER_DOCKER_CMD:-}" ]];then
+    DOCKER="${BUILDKITE_PLUGIN_ANYSCALE_CLUSTER_DOCKER_CMD:-docker}"
+fi
+
+if [[ -n "${BUILDKITE_PLUGIN_ANYSCALE_CLUSTER_NAME:-}" ]];then
+    DOCKER_CMD+=(--name "$BUILDKITE_PLUGIN_ANYSCALE_CLUSTER_NAME")
+fi
+
+if [[ -n "${BUILDKITE_PLUGIN_ANYSCALE_CLUSTER_ID:-}" ]];then
+    DOCKER_CMD+=(--cluster-id "$BUILDKITE_PLUGIN_ANYSCALE_CLUSTER_ID")
+fi
+
+if [[ -n "${BUILDKITE_PLUGIN_ANYSCALE_PROJECT_ID:-}" ]];then
+    DOCKER_CMD+=(--project "$BUILDKITE_PLUGIN_ANYSCALE_PROJECT_ID")
+fi
+
+"$DOCKER" "${DOCKER_OPTIONS[@]}" "$IMAGE" run "${DOCKER_CMD[@]}"
