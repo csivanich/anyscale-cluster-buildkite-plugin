@@ -1,0 +1,25 @@
+steps:
+  - name: ":anyscale: Submit a Ray job to an Anyscale cluster"
+    timeout: 10
+    plugins:
+      - seek-oss/aws-sm#v2.3.1:
+          env:
+            ANYSCALE_CLI_TOKEN: "anyscale_cli_token"
+      - csivanich/anyscale-cluster#dev:
+          image: anyscale/ray:2.8.0
+          env-name: cpu-test:1
+          compute-name: small-amd-cpu-only
+      - docker#v5.8.0:
+          image: anyscale/ray:2.8.0
+          entrypoint: ray
+          environment:
+            - RAY_ADDRESS
+            - ANYSCALE_CLI_TOKEN
+            - ANYSCALE_HOST
+          command:
+            - job
+            - submit
+            - --working-dir=.
+            - --
+            - python
+            - job.py
