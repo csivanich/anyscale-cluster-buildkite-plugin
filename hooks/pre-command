@@ -87,7 +87,7 @@ if [[ -z "${ANYSCALE_CLI_TOKEN:-}" ]];then
 fi
 
 buildkite-agent annotate --context anyscale_cluster --style info <<-EOL
-:anyscale: Cluster: \`$ANYSCALE_CLUSTER_NAME\` (starting)
+:anyscale: Cluster: \`$ANYSCALE_CLUSTER_NAME\` :bk-status-pending:
 EOL
 
 "$DOCKER" "${DOCKER_OPTIONS[@]}" "$IMAGE" "${DOCKER_CMD[@]}"
@@ -95,5 +95,5 @@ EOL
 echo "--- :anyscale: Started cluster: $ANYSCALE_CLUSTER_NAME"
 
 buildkite-agent annotate --context anyscale_cluster --style info <<-EOL
-:anyscale: Cluster: \`$ANYSCALE_CLUSTER_NAME\` (running)
+:anyscale: Cluster: \`$ANYSCALE_CLUSTER_NAME\` :bk-status-running:
 EOL

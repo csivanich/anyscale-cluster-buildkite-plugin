@@ -51,5 +51,5 @@ fi
 echo "--- :anyscale: Terminated cluster: $ANYSCALE_CLUSTER_NAME"
 
 buildkite-agent annotate --context anyscale_cluster --style info <<-EOL
-:anyscale: Cluster: \`$ANYSCALE_CLUSTER_NAME\` (terminated)
+:anyscale: Cluster: \`$ANYSCALE_CLUSTER_NAME\` :bk-status-passed:
 EOL
